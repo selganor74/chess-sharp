@@ -8,29 +8,47 @@ namespace chess.core.tests
     [TestFixture]
     public class TestsFor_Position
     {
-        [Test]
-        public void create_position_from_index() 
+        /* Here a conversion table from and to algebraic notation 
+           of positions and array indexes (as stored in BoardState)
+           eg.: d5 = 35
+        /---------------------------------------\
+    8   | 56 | 57 | 58 | 59 | 60 | 61 | 62 | 63 |
+        |---------------------------------------|
+    7   | 48 | 49 | 50 | 51 | 52 | 53 | 54 | 55 |
+        |---------------------------------------|
+    6   | 40 | 41 | 42 | 43 | 44 | 45 | 46 | 47 |
+        |---------------------------------------|
+    5   | 32 | 33 | 34 | 35 | 36 | 37 | 38 | 39 |
+        |---------------------------------------|
+    4   | 24 | 25 | 26 | 27 | 28 | 29 | 30 | 31 |
+        |---------------------------------------|
+    3   | 16 | 17 | 18 | 19 | 20 | 21 | 22 | 23 |
+        |---------------------------------------|
+    2   |  8 |  9 | 10 | 11 | 12 | 13 | 14 | 15 |
+        |---------------------------------------|
+    1   |  0 |  1 |  2 |  3 |  4 |  5 |  6 |  7 |
+        \---------------------------------------/
+           a    b    c    d    e    f    g    h
+        */
+
+        [TestCase(0,"a1")]
+        [TestCase(8,"a2")]
+        [TestCase(35,"d5")]
+        [TestCase(63,"h8")]
+        public void create_position_from_index(int index, string position) 
         {
-            var p = new Position(0);
-            Assert.AreEqual("a1", p.AsString);
-
-            p = new Position(8);
-            Assert.AreEqual("a2", p.AsString);
-
-            p = new Position(63);
-            Assert.AreEqual("h8", p.AsString);
+            var p = new Position(index);
+            Assert.AreEqual(position, p.AsString);
         }
 
-        public void create_position_from_string() 
+        [TestCase(0,"a1")]
+        [TestCase(8,"a2")]
+        [TestCase(35,"d5")]
+        [TestCase(63,"h8")]
+        public void create_position_from_string(int index, string position) 
         {
-            var p = new Position("a1");
-            Assert.AreEqual(0, p.AsIndex);
-
-            p = new Position("a2");
-            Assert.AreEqual(8, p.AsIndex);
-
-            p = new Position("h8");
-            Assert.AreEqual(63, p.AsIndex);
+            var p = new Position(position);
+            Assert.AreEqual(index, p.AsIndex);
         }
     }
 }
