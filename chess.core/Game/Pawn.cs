@@ -9,7 +9,7 @@ namespace chess.core.Game
 {
     public class Pawn : BasePiece
     {
-        public override Kind Kind { get ; set ; } = Kind.Pawn;
+        public override Kind Kind { get; set; } = Kind.Pawn;
         public bool IsFirstMove { get; private set; } = true;
         public bool CanBeTookEnPassant { get; private set; } = false;
         private BoardState _boardState;
@@ -48,7 +48,8 @@ namespace chess.core.Game
             {
                 nextPos = Position.MoveBy(direction * currentStep, 0);
                 if (nextPos != null && Board.IsPositionFree(nextPos))
-                    toReturn.Add(new Move { Piece = this, From = this.Position, To = nextPos });
+                    toReturn.Add(new Move(this, nextPos));
+
                 currentStep++;
             } while (currentStep <= maxSteps && nextPos != null && Board.IsPositionFree(nextPos));
 
@@ -58,17 +59,17 @@ namespace chess.core.Game
                 var destPosition = Position.MoveBy(direction, offsetX);
                 if (destPosition == null)
                     continue;
-                var pieceToTake = Board.GetPieceAtPosition(destPosition);
-                if (destPosition != null
-                    && pieceToTake.IsOpponentOf(this))
+
+                var pieceToTake = Board.GetOpponentAtPosition(destPosition, this);
+                if (pieceToTake != null)
                 {
-                    toReturn.Add(new Move { Piece = this, From = this.Position, To = destPosition, TookPiece = pieceToTake });
+                    toReturn.Add(new Move(this, destPosition, pieceToTake));
                     continue;
                 }
 
                 var enPassantTakePosition = Position.MoveBy(0, offsetX);
                 var pawnToTake = Board.GetPieceAtPosition(enPassantTakePosition) as Pawn;
-                if (pawnToTake != null && pawnToTake.CanBeTookEnPassant)
+                if (pawnToTake != null && pawnToTake.IsOpponentOf(this) && pawnToTake.CanBeTookEnPassant)
                     toReturn.Add(new Move { Piece = this, From = this.Position, To = destPosition, TookPiece = pawnToTake });
             }
 
@@ -77,9 +78,9 @@ namespace chess.core.Game
 
         public override void Move(Move move)
         {
-            var deltaY = Math.Abs( move.From.Delta(move.To).Item2 );
-            
-            if (IsFirstMove && deltaY == 2) 
+            var deltaY = Math.Abs(move.From.Delta(move.To).Item2);
+
+            if (IsFirstMove && deltaY == 2)
                 CanBeTookEnPassant = true;  // will be reset by OnOpponentsMove handler
 
             IsFirstMove = false;
@@ -89,6 +90,6 @@ namespace chess.core.Game
         private void OnOpponentsMove(Move move)
         {
             CanBeTookEnPassant = false;
-        }        
+        }
     }
 }

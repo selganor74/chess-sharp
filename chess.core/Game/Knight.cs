@@ -36,18 +36,16 @@ namespace chess.core.Game
             foreach (var m in moves)
             {
                 var destination = this.Position.MoveBy(m.Item1, m.Item2);
-                if (destination != null)
+                if (destination == null) 
+                    continue;
+
+                if (Board.IsPositionFree(destination) || Board.IsPositionOccupiedByOpponent(destination, this))
                 {
-                    if (Board.IsPositionFree(destination) || Board.IsPositionOccupiedByOpponent(destination, this))
-                    {
-                        var mv = new Move(this, destination);
-                        
-                        var pieceAtDestination = Board.GetPieceAtPosition(destination);
-                        mv.TookPiece = pieceAtDestination.IsEmptyHouse() ? null : pieceAtDestination;
-                        
-                        toReturn.Add(mv);
-                    }
+                    var mv = new Move(this, destination, Board.GetOpponentAtPosition(destination, this));
+
+                    toReturn.Add(mv);
                 }
+
             }
 
             return toReturn;

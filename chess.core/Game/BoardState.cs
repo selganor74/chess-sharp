@@ -68,6 +68,13 @@ namespace chess.core.Game
             return pieceAtPosition.IsOpponentOf(piece);
         }
 
+        public IPiece GetOpponentAtPosition(Position position, IPiece piece)
+        {
+            var pieceAtDestination = GetPieceAtPosition(position);
+            var toReturn = pieceAtDestination.IsOpponentOf(piece) ? pieceAtDestination : null;
+            return toReturn;
+        }
+
         public IPiece PieceFactory(Kind kind, Color color, Position position)
         {
             switch (kind)

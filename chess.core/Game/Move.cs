@@ -8,11 +8,12 @@ namespace chess.core.Game
         public IPiece TookPiece { get; set; }
 
         public Move() { }
-        public Move(IPiece piece, Position to)
+        public Move(IPiece piece, Position to, IPiece tookPiece = null)
         {
             Piece = piece;
             From = piece.Position;
             To = to;
+            TookPiece = tookPiece;
         }
 
         public Move(IPiece piece, string to)
