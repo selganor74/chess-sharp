@@ -18,7 +18,7 @@ namespace chess.core.tests
         [TestCase("d5", 13)]
         [TestCase("e5", 13)]
         [TestCase("e4", 13)]
-        public void number_of_valid_moves_relative_to_position(string position, int numberOfMoves)
+        public void number_of_valid_moves_relative_to_position_on_an_empty_board(string position, int numberOfMoves)
         {
             var board = new BoardState();
             board.NextPlayer = Color.White;
