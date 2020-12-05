@@ -128,6 +128,23 @@ namespace chess.core.tests
         }
 
         [Test]
+        public void a_first_move_of_one_step_makes_the_pawn_immune_to_en_passant()
+        {
+            var board = new BoardState();
+            board.NextPlayer = Color.White;
+
+            var whitePawn = NewWhitePawn("c2"); // this pawn will move its first move
+            board.PutPiece(whitePawn);
+            var blackPawn = NewBlackPawn("d3"); // this will take the previous "en passant" ( https://en.wikipedia.org/wiki/En_passant )
+            board.PutPiece(blackPawn);
+
+            whitePawn.Move("c3");
+            var aMoveThatTakes = blackPawn.ValidMoves().SingleOrDefault(m => m.TookPiece == whitePawn);
+            Assert.IsNull(aMoveThatTakes);
+        }
+
+
+        [Test]
         public void if_not_taken_en_passant_immediately_it_can_t_be_taken_any_more()
         {
             var board = new BoardState();
