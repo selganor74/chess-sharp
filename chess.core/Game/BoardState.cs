@@ -1,5 +1,7 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Text;
 
 namespace chess.core.Game
 {
@@ -85,12 +87,6 @@ namespace chess.core.Game
             throw new Exception($"Can't create piece of kind {kind.ToString()}");
         }
 
-        public void InitClassicGame()
-        {
-
-        }
-
-
         public void MakeMove(Move move)
         {
             var source = Houses[move.From.AsIndex];
@@ -110,6 +106,42 @@ namespace chess.core.Game
 
             NextPlayer = move.Piece.OpponentsColor;
             _moveHandlers[move.Piece.Color]?.Invoke(move);
+        }
+
+        public List<Move> GetMovesForPlayer(Color playerColor) 
+        {
+            var moves = Houses.Where(p => p.Color == playerColor).SelectMany(e => e.ValidMoves()).ToList();
+
+            return moves;
+        }
+
+        public override string ToString()
+        {
+            var sb = new StringBuilder();
+            sb.AppendLine(@"/---------------------------------------\");
+            for(int y = 7; y >= 0; y--) {
+                var offset = 8 * y;
+                sb.Append("|");
+                var colorWhite = (char)27 + "[33m";
+                var colorBlack = (char)27 + "[34m";
+                var colorReset = (char)27 + "[37m";
+                for(int x = 0; x < 8; x++) 
+                {
+                    string c = "";
+                    switch(Houses[offset+x].Color) {
+                        case Color.White: {c = colorWhite; break; }
+                        case Color.Black: {c = colorBlack; break; }
+                        case Color.None: {c = colorReset; break; }
+                    }
+                    sb.Append(@$"  {c}{((char)Houses[offset+x].Kind).ToString()}{colorReset} |");
+                }
+                sb.AppendLine();
+                if(y != 0)
+                    sb.AppendLine(@"|---------------------------------------|");
+            }
+            sb.AppendLine(@"\---------------------------------------/"); 
+
+            return sb.ToString();           
         }
     }
 }
