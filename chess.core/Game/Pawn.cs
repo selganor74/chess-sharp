@@ -37,7 +37,7 @@ namespace chess.core.Game
             var direction = Color == Color.White ? 1 : -1;
             var toReturn = new List<Move>();
             var maxSteps = IsFirstMove ? 2 : 1;
-            var currentStep = 0;
+            var currentStep = 1;
             Position nextPos;
 
             if (Board == null)
@@ -46,11 +46,11 @@ namespace chess.core.Game
             // straight moves
             do
             {
-                nextPos = Position.MoveBy(direction, 0);
+                nextPos = Position.MoveBy(direction * currentStep, 0);
                 if (nextPos != null && Board.IsPositionFree(nextPos))
                     toReturn.Add(new Move { Piece = this, From = this.Position, To = nextPos });
                 currentStep++;
-            } while (currentStep < maxSteps && nextPos != null && Board.IsPositionFree(nextPos));
+            } while (currentStep <= maxSteps && nextPos != null && Board.IsPositionFree(nextPos));
 
             // takes
             foreach (int offsetX in new int[] { -1 /* Left take */, 1 /* right take */ })

@@ -1,69 +1,8 @@
-using System.Drawing;
-using System.Net.NetworkInformation;
-using System.Reflection;
-using System.Transactions;
 using System;
 using System.Collections.Generic;
 
 namespace chess.core.Game
 {
-    public enum Color
-    {
-        Black,
-        White,
-        None /* for empty houses */
-    }
-
-    public enum Kind
-    {
-        King = 'K',
-        Queen = 'Q',
-        Castle = 'R',
-        Bishop = 'B',
-        Knight = 'N',
-        Pawn = 'P',
-        Empty = ' '
-    }
-
-    public class Move
-    {
-        public IPiece Piece { get; set; }
-        public Position From { get; set; }
-        public Position To { get; set; }
-        public IPiece TookPiece { get; set; }
-
-        public Move() { }
-        public Move(IPiece piece, Position to)
-        {
-            Piece = piece;
-            From = piece.Position;
-            To = to;
-        }
-
-        public Move(IPiece piece, string to)
-        {
-            Piece = piece;
-            From = piece.Position;
-            To = new Position(to);
-        }
-    }
-
-    public interface IPiece
-    {
-        Position Position { get; set; }
-        Kind Kind { get; set; }
-        Color Color { get; set; }
-
-        BoardState Board { get; set; }
-        List<Move> ValidMoves();
-        void Move(string to, IPiece tookPiece = null);
-        void Move(Position to, IPiece tookPiece = null);
-        void Move(Move move);
-        bool IsOpponentOf(IPiece other);
-        bool IsEmptyHouse();
-        Color OpponentsColor { get; }
-    }
-
     public class BoardState
     {
         private Dictionary<Color, Action<Move>> _moveHandlers = new Dictionary<Color, Action<Move>>();
@@ -73,8 +12,8 @@ namespace chess.core.Game
 
         public BoardState()
         {
-            _moveHandlers[Color.White] = (move) => {};
-            _moveHandlers[Color.Black] = (move) => {};
+            _moveHandlers[Color.White] = (move) => { };
+            _moveHandlers[Color.Black] = (move) => { };
 
             Houses = new IPiece[64];
             for (int i = 0; i < 64; i++)
@@ -87,14 +26,14 @@ namespace chess.core.Game
             PutPieceAt(new EmptyHouse(position), position);
         }
 
-        public void RegisterPlayerMoveHandler(Color player, Action<Move> handler) 
+        public void RegisterPlayerMoveHandler(Color player, Action<Move> handler)
         {
-            _moveHandlers[player] += handler; 
+            _moveHandlers[player] += handler;
         }
 
-        public void UnregisterPlayerMoveHandler(Color player, Action<Move> handler) 
+        public void UnregisterPlayerMoveHandler(Color player, Action<Move> handler)
         {
-            _moveHandlers[player] -= handler; 
+            _moveHandlers[player] -= handler;
         }
 
         public void PutPieceAt(IPiece piece, Position position)
@@ -119,11 +58,22 @@ namespace chess.core.Game
             return GetPieceAtPosition(position).IsEmptyHouse();
         }
 
+        public bool IsPositionOccupiedByOpponent(Position position, IPiece piece)
+        {
+            var pieceAtPosition = GetPieceAtPosition(position);
+            
+            if (pieceAtPosition.IsEmptyHouse()) 
+                return false;
+            
+            return pieceAtPosition.IsOpponentOf(piece);
+        }
+
         public IPiece PieceFactory(Kind kind, Color color, Position position)
         {
             switch (kind)
             {
                 case Kind.Pawn: return new Pawn(position, color);
+                case Kind.Knight: return new Knight(position, color);
             }
             throw new Exception($"Can't create piece of kind {kind.ToString()}");
         }

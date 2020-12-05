@@ -112,6 +112,28 @@ namespace chess.core.tests
         }
 
         [Test]
+        public void a_pawn_can_t_move_over_a_piece_of_same_color()
+        {
+            var board = new BoardState();
+            board.NextPlayer = Color.White;
+
+            var whitePawn = NewWhitePawn("d2");
+            board.PutPiece(whitePawn);
+            
+            var aPieceBlockingThe2StepsMove = NewWhitePawn("d4");
+            board.PutPiece(aPieceBlockingThe2StepsMove);
+            
+            var validMoves = whitePawn.ValidMoves();
+            Assert.AreEqual(1, validMoves.Count);
+
+            var aPieceBlockingThe1StepMove = NewWhitePawn("d3");
+            board.PutPiece(aPieceBlockingThe1StepMove);
+            
+            validMoves = whitePawn.ValidMoves();
+            Assert.AreEqual(0, validMoves.Count);
+        }
+
+        [Test]
         public void a_first_move_pawn_can_be_taken_en_passant()
         {
             var board = new BoardState();
@@ -135,7 +157,7 @@ namespace chess.core.tests
 
             var whitePawn = NewWhitePawn("c2"); // this pawn will move its first move
             board.PutPiece(whitePawn);
-            var blackPawn = NewBlackPawn("d3"); // this will take the previous "en passant" ( https://en.wikipedia.org/wiki/En_passant )
+            var blackPawn = NewBlackPawn("d3"); // this will not be able to take the previous "en passant" ( https://en.wikipedia.org/wiki/En_passant )
             board.PutPiece(blackPawn);
 
             whitePawn.Move("c3");
