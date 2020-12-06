@@ -14,7 +14,7 @@ namespace chess.core.Game
 
         public Color NextPlayer { get; set; } = Color.White;
         public Color Opponent { get { return NextPlayer == Color.White ? Color.Black : Color.White; } }
-        public bool PlayerIsUnderCheck {get { return GetMovesForPlayer(Opponent, false).Any(m => m.TookPiece?.Kind == Kind.King); } }
+        public bool PlayerIsUnderCheck {get { return GetMovesForPlayer(Opponent, false).Any(m => m.TookPiece == Kind.King); } }
         public IPiece[] Houses { get; set; }
         public int MovesCounter { get; private set; }
         public int MovesWithoutTakesCounter { get; private set; }
@@ -97,39 +97,29 @@ namespace chess.core.Game
 
         public void MakeMove(Move move)
         {
-            move = new Move()
-            {
-                From = new Position(move.From.AsIndex),
-                To = new Position(move.To.AsIndex),
-                Piece = GetPieceAtPosition(move.From),
-                TookPiece = move.TookPiece == null ? null : GetPieceAtPosition(move.TookPiece.Position)
-            };
 
             var source = Houses[move.From.AsIndex];
-            if (source.Kind != move.Piece.Kind || source.Position.AsIndex != move.From.AsIndex)
-                throw new Exception($"Invalid move. Piece at {move.From.AsString} is not of kind {move.Piece.Kind.ToString()}, but is a {source.Kind.ToString()}");
+            if (source.Kind != move.Piece || source.Position.AsIndex != move.From.AsIndex)
+                throw new Exception($"Invalid move. Piece at {move.From.AsString} is not of kind {move.Piece.ToString()}, but is a {source.Kind.ToString()}");
 
-            if (NextPlayer != move.Piece.Color)
-                throw new Exception($"It's {NextPlayer.ToString()} turn! Tried to move {move.Piece.Color} piece");
+            if (NextPlayer != move.Player)
+                throw new Exception($"It's {NextPlayer.ToString()} turn! Tried to move {move.Player} piece");
 
             var pieceAtSource = GetPieceAtPosition(move.From);
-            move.Piece = pieceAtSource;
             var pieceAtDestination = GetPieceAtPosition(move.To);
 
-            if (pieceAtDestination.IsOpponentOf(move.Piece))
-                move.TookPiece = pieceAtDestination;
-
             RemovePieceAt(move.From);
-            PutPieceAt(move.Piece, move.To);
+            PutPieceAt(pieceAtSource, move.To);
 
-            if(move.Piece is Pawn && move.To.Row == ((move.Piece.Color == Color.Black) ? 0 : 7)) 
+            // If a pawn traverses all the board becomes a Queen !!!
+            if(move.Piece == Kind.Pawn && move.To.Row == ((move.Player == Color.Black) ? 0 : 7)) 
             {
-                var queen = new Queen(move.To, move.Piece.Color);
+                var queen = new Queen(move.To, move.Player);
                 RemovePieceAt(move.To);
                 PutPiece(queen);
             }
 
-            NextPlayer = move.Piece.OpponentsColor;
+            NextPlayer = Opponent;
             MovesCounter++;
             LastMove = move;
             if (move.TookPiece != null)
@@ -137,7 +127,7 @@ namespace chess.core.Game
             else
                 MovesWithoutTakesCounter++;
 
-            _moveHandlers[move.Piece.Color]?.Invoke(move);
+            _moveHandlers[move.Player]?.Invoke(move);
         }
 
         public List<Move> GetMovesForPlayer(Color playerColor, bool checkForChecks = true)
@@ -151,7 +141,7 @@ namespace chess.core.Game
                 {
                     var simulated = SimulateMove(m);
                     var opponentsMoves = simulated.GetMovesForPlayer(playerColor == Color.White ? Color.Black : Color.White, false);
-                    var causesCheck = opponentsMoves.Any(om => om.TookPiece?.Kind == Kind.King);
+                    var causesCheck = opponentsMoves.Any(om => om.TookPiece == Kind.King);
                     if (causesCheck)
                         moves.Remove(m);
                 }

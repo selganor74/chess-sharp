@@ -32,7 +32,7 @@ namespace chess.core.Game
 
         public virtual void Move(Position to, IPiece tookPiece = null)
         {
-            var move = new Move() { Piece = this, From = this.Position, To = to, TookPiece = tookPiece };
+            var move = new Move(this, to, tookPiece);
             Move(move);
         }
         public virtual void Move(Move move)
