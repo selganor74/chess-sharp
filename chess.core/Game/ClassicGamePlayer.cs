@@ -1,3 +1,4 @@
+using System.Linq;
 using System;
 using System.Collections.Generic;
 
@@ -23,10 +24,14 @@ namespace chess.core.Game
                 var numberOfMoves = moves.Count;
                 var nextMoveIndex = rnd.Next(numberOfMoves - 1);
                 var move = moves[nextMoveIndex];
-                move.Piece.Move(move);
+                var toMove = Board.GetPieceAtPosition(move.From);
+                toMove.Move(move);
                 yield return move;
 
                 moves = Board.GetMovesForPlayer(Board.NextPlayer);
+                if (Board.MovesWithoutTakesCounter > 150) {
+                    moves = new List<Move>();
+                }
             }
             while(moves.Count > 0);
 
