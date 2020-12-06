@@ -1,16 +1,22 @@
+using System.Runtime.Serialization;
+using System;
 using System.Collections.Generic;
 
 namespace chess.core.Game
 {
-
+    [Serializable]
     public abstract class BasePiece : IPiece
     {
         public Position Position { get; set; }
         public abstract Kind Kind { get; set; }
         public Color Color { get; set; }
-        public virtual BoardState Board { get; set; }
+        public virtual BoardState Board {get;set;}
 
-        public Color OpponentsColor => Color == Color.None ? Color.None : (Color == Color.White ? Color.Black : Color.White);
+        public Color OpponentsColor {
+            get {
+                return Color == Color.None ? Color.None : (Color == Color.White ? Color.Black : Color.White);
+            } 
+        }
 
         public BasePiece(Position position, Color color)
         {
@@ -43,5 +49,7 @@ namespace chess.core.Game
         {
             return false;
         }
+
+        public abstract IPiece Clone();
     }
 }

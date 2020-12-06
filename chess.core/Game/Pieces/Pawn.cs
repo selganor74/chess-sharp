@@ -1,3 +1,4 @@
+using System.Runtime.Serialization;
 using System.IO.MemoryMappedFiles;
 using System.Runtime.CompilerServices;
 using System.Reflection;
@@ -7,11 +8,14 @@ using System.Collections.Generic;
 
 namespace chess.core.Game
 {
+    [Serializable]
     public class Pawn : BasePiece
     {
         public override Kind Kind { get; set; } = Kind.Pawn;
         public bool IsFirstMove { get; private set; } = true;
         public bool CanBeTookEnPassant { get; private set; } = false;
+        
+        [IgnoreDataMemberAttribute]
         private BoardState _boardState;
         public override BoardState Board
         {
@@ -90,6 +94,14 @@ namespace chess.core.Game
         private void OnOpponentsMove(Move move)
         {
             CanBeTookEnPassant = false;
+        }
+
+        public override IPiece Clone()
+        {
+            var toReturn = new Pawn(new Position(Position.AsIndex), Color);
+            toReturn.IsFirstMove = this.IsFirstMove;
+            toReturn.CanBeTookEnPassant = this.CanBeTookEnPassant;
+            return toReturn;
         }
     }
 }

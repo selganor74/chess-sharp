@@ -4,10 +4,13 @@ using System.Xml.Serialization;
 
 namespace chess.core.Game
 {
+    [Serializable]
     public class Position
     {
         public string AsString { get; }
         public int AsIndex { get; }
+        public int Row {get;} // from 0 to 7
+        public int Column {get;} // from 0 to 7
 
         public Position(string fromString)
         {
@@ -18,6 +21,8 @@ namespace chess.core.Game
             int x = col - 'a'; // starting from 0
             int y = int.Parse(row) - 1; // starting from 0
 
+            Row = y;
+            Column = x;
             AsString = fromString;
             AsIndex = (8 * y) + x;
         }
@@ -30,6 +35,8 @@ namespace chess.core.Game
             var col = ((char)('a' + x)).ToString();
             var row = (y + 1).ToString();
 
+            Row = y;
+            Column = x;
             AsString = col + row;
             AsIndex = fromIndex;
         }

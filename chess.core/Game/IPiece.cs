@@ -7,6 +7,7 @@ namespace chess.core.Game
         Position Position { get; set; }
         Kind Kind { get; set; }
         Color Color { get; set; }
+        Color OpponentsColor { get; }
 
         BoardState Board { get; set; }
         List<Move> ValidMoves();
@@ -15,6 +16,9 @@ namespace chess.core.Game
         void Move(Move move);
         bool IsOpponentOf(IPiece other);
         bool IsEmptyHouse();
-        Color OpponentsColor { get; }
+
+        // Creates a perfecto copy of the Piece, 
+        //excluding so the piece must be replaced into the board.
+        IPiece Clone();
     }
 }

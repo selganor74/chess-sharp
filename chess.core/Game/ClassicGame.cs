@@ -2,6 +2,7 @@ using System;
 
 namespace chess.core.Game
 {
+    [Serializable]
     public static class ClassicGame
     {
         public static void InitClassicGame(this BoardState board) 

@@ -3,9 +3,11 @@ using System.Collections.Generic;
 
 namespace chess.core.Game
 {
+    [Serializable]
     public class ClassicGamePlayer
     {
         public BoardState Board { get; }
+        public Color Winner {get; private set;}
         public ClassicGamePlayer()
         {
             Board = new BoardState();
@@ -23,11 +25,12 @@ namespace chess.core.Game
                 var move = moves[nextMoveIndex];
                 move.Piece.Move(move);
                 yield return move;
-                
+
                 moves = Board.GetMovesForPlayer(Board.NextPlayer);
             }
             while(moves.Count > 0);
-        }
 
+            Winner = Board.Opponent;
+        }
     }
 }

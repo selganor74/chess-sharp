@@ -3,6 +3,7 @@ using System.Collections.Generic;
 
 namespace chess.core.Game
 {
+    [Serializable]
     public abstract class BaseBishopCastleQueenKing : BasePiece
     {
         protected abstract List<Tuple<int,int>> Directions {get;}

@@ -1,5 +1,8 @@
+using System;
+
 namespace chess.core.Game
 {
+    [Serializable]
     public class Move
     {
         public IPiece Piece { get; set; }
@@ -21,6 +24,12 @@ namespace chess.core.Game
             Piece = piece;
             From = piece.Position;
             To = new Position(to);
+        }
+
+        public override string ToString()
+        {
+            var take = TookPiece != null ? "takes " + TookPiece.Kind.ToString() : "";
+            return $"{Piece.Color.ToString()} {Piece.Kind.ToString()} ( {From.AsString} -> {To.AsString} ) {take}";
         }
     }
 }

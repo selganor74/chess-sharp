@@ -1,8 +1,10 @@
 using System;
 using System.Collections.Generic;
+using System.Runtime.Serialization;
 
 namespace chess.core.Game
 {
+    [Serializable]
     public class EmptyHouse : IPiece
     {
         public Position Position { get; set; }
@@ -10,7 +12,7 @@ namespace chess.core.Game
         public Color Color { get; set; } = Color.None;
         public BoardState Board { get; set; }
 
-        public Color OpponentsColor => Color.None;
+        public Color OpponentsColor { get {return Color.None; } }
 
         public EmptyHouse(Position position)
         {
@@ -53,6 +55,13 @@ namespace chess.core.Game
         public void Move(Move move)
         {
             throw new NotImplementedException();
+        }
+
+        public IPiece Clone()
+        {
+            var toReturn = new EmptyHouse(new Position(Position.AsIndex));
+
+            return toReturn;
         }
     }
 }

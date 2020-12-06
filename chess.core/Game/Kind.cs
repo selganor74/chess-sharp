@@ -1,5 +1,8 @@
+using System;
+
 namespace chess.core.Game
 {
+    [Serializable]
     public enum Kind
     {
         King = 'K',

@@ -11,9 +11,10 @@ namespace chess.player.console
             foreach(var m in game.Play())
             {
                 Console.WriteLine(game.Board.ToString());
-                Console.WriteLine("Press a key for next move");
-                var k = Console.ReadKey();
+                // Console.WriteLine("Press a key for next move");
+                // var k = Console.ReadKey();
             }
+            Console.Write($"The winner is {game.Winner.ToString()}");
         }
     }
 }

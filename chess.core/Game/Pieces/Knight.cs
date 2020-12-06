@@ -10,6 +10,7 @@ using System.Collections.Generic;
 
 namespace chess.core.Game
 {
+    [Serializable]
     public class Knight : BasePiece
     {
         public override Kind Kind { get; set; } = Kind.Knight;
@@ -47,6 +48,13 @@ namespace chess.core.Game
                 }
 
             }
+
+            return toReturn;
+        }
+
+        public override IPiece Clone()
+        {
+            var toReturn = new Knight(new Position(Position.AsIndex), Color);
 
             return toReturn;
         }
