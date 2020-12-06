@@ -7,12 +7,11 @@ namespace chess.core.Game
     {
         public Color Player {get;}
         public Kind Piece { get;  }
-        public Kind? TookPiece { get;  }
-        public Position TookPiecePosition { get; }
         public Position From { get;  }
         public Position To { get;  }
+        public Kind? TookPiece { get;  }
+        public Position TookPiecePosition { get; }
 
-        public Move() { }
         public Move(IPiece piece, Position to, Kind? tookPiece = null, Position tookPiecePosition = null)
         {
             Player = piece.Color;
@@ -23,24 +22,12 @@ namespace chess.core.Game
             TookPiecePosition = tookPiecePosition;
         }
 
-        public Move(IPiece piece, Position to, IPiece tookPiece = null)
+        public Move(IPiece piece, Position to, IPiece tookPiece = null) : this(piece, to, tookPiece?.Kind, tookPiece?.Position)
         {
-            Player = piece.Color;
-            Piece = piece.Kind;
-            From = piece.Position;
-            To = to;
-            TookPiece = tookPiece?.Kind;
-            TookPiecePosition = tookPiece?.Position;
         }
 
-        public Move(IPiece piece, string to, IPiece tookPiece = null)
+        public Move(IPiece piece, string to, IPiece tookPiece = null) : this(piece, new Position(to), tookPiece)
         {
-            Player = piece.Color;
-            Piece = piece.Kind;
-            From = piece.Position;
-            To = new Position(to);
-            TookPiece = tookPiece?.Kind;
-            TookPiecePosition = tookPiece?.Position;
         }
 
         public override string ToString()

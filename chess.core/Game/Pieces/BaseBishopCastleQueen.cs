@@ -8,11 +8,10 @@ namespace chess.core.Game
     {
         protected abstract List<Tuple<int,int>> Directions {get;}
         protected abstract int MaxSteps {get;}
+        public override BoardState Board { get => base.Board; set => base.Board = value; }
         protected BaseBishopCastleQueenKing(Position position, Color color) : base(position, color)
         {
         }
-
-        public override BoardState Board { get => base.Board; set => base.Board = value; }
 
         public override List<Move> ValidMoves()
         {
@@ -29,17 +28,15 @@ namespace chess.core.Game
 
                     if (Board.IsPositionOccupiedByOpponent(nextPosition, this))
                     {
-                        var takingMove = new Move(this, nextPosition, Board.GetOpponentAtPosition(nextPosition, this));
+                        var takingMove = new Move(this, nextPosition, Board.GetPieceAtPosition(nextPosition));
                         toReturn.Add(takingMove);
                         break;
                     }
 
                     if (!Board.IsPositionFree(nextPosition))
-                    {
                         break;
-                    }
 
-                    var move = new Move(this, nextPosition, Board.GetOpponentAtPosition(nextPosition, this));
+                    var move = new Move(this, nextPosition, null);
                     toReturn.Add(move);
                     currentStep++;
                 } 
