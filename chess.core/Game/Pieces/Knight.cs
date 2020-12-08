@@ -42,7 +42,12 @@ namespace chess.core.Game
 
                 if (Board.IsPositionFree(destination) || Board.IsPositionOccupiedByOpponent(destination, this))
                 {
-                    var mv = new Move(this, destination, Board.GetOpponentAtPosition(destination, this));
+                    var eventualOpponent = Board.GetOpponentAtPosition(destination, this);
+                    var moveKind = MoveKind.Move;
+                    if (eventualOpponent != null)
+                        moveKind = MoveKind.Take;
+                        
+                    var mv = new Move(moveKind, this, destination, eventualOpponent);
 
                     toReturn.Add(mv);
                 }

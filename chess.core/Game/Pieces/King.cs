@@ -1,3 +1,4 @@
+using System.Linq;
 using System;
 using System.Collections.Generic;
 
@@ -6,6 +7,7 @@ namespace chess.core.Game
     [Serializable]
     public class King : BaseBishopCastleQueenKing
     {
+        public bool IsFirstMove {get;set;} = true;
         public override Kind Kind {get;set;} = Kind.King;
         protected override int MaxSteps { get {return 1; } }
 
@@ -24,10 +26,46 @@ namespace chess.core.Game
         {
         }
 
+        public override void Move(Move move)
+        {
+            IsFirstMove = false;
+            base.Move(move);
+        }
+
+        public override List<Move> ValidMoves()
+        {
+            var validMoves = base.ValidMoves();
+
+            // Castling is a move the king can do.
+            if (IsFirstMove) {
+                var castles = Board.GetCastlesForPlayer(Color).Where(c => c.IsFirstMove);
+                var kingPosition = Position;
+                foreach(var c in castles) {
+                    var d = c.Position.Column - kingPosition.Column;
+                    var direction = Math.Sign(d); // direction for x checks
+                    var canDoCastling = true;
+                    for(var step = 1; step < Math.Abs(d); step ++)
+                    {
+                        var newPos = kingPosition.MoveBy(0, direction * step);
+                        if (!Board.IsPositionFree(newPos)) {
+                            canDoCastling = false;
+                            break;
+                        }
+                    }
+                    if (canDoCastling) {
+                        var newKingPosition = kingPosition.MoveBy(0, 2 * direction);
+                        var newCastlePosition = newKingPosition.MoveBy(0, -1 * direction);
+                        validMoves.Add(new Move(MoveKind.Castling, this, newKingPosition, c.Position, newCastlePosition));
+                    }
+                }
+            }            
+            return validMoves;
+        }
+
         public override IPiece Clone()
         {
             var toReturn = new King(new Position(Position.AsIndex), Color);
-
+            toReturn.IsFirstMove = IsFirstMove;
             return toReturn;
         }
     }

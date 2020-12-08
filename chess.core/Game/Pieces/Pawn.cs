@@ -1,8 +1,4 @@
 using System.Runtime.Serialization;
-using System.IO.MemoryMappedFiles;
-using System.Runtime.CompilerServices;
-using System.Reflection;
-using System.Security.Cryptography;
 using System;
 using System.Collections.Generic;
 
@@ -52,7 +48,7 @@ namespace chess.core.Game
             {
                 nextPos = Position.MoveBy(direction * currentStep, 0);
                 if (nextPos != null && Board.IsPositionFree(nextPos))
-                    toReturn.Add(new Move(this, nextPos, null));
+                    toReturn.Add(new Move(MoveKind.Move, this, nextPos, null));
 
                 currentStep++;
             } while (currentStep <= maxSteps && nextPos != null && Board.IsPositionFree(nextPos));
@@ -67,14 +63,14 @@ namespace chess.core.Game
                 var pieceToTake = Board.GetOpponentAtPosition(destPosition, this);
                 if (pieceToTake != null)
                 {
-                    toReturn.Add(new Move(this, destPosition, pieceToTake));
+                    toReturn.Add(new Move(MoveKind.Take, this, destPosition, pieceToTake));
                     continue;
                 }
 
                 var enPassantTakePosition = Position.MoveBy(0, offsetX);
                 var pawnToTake = Board.GetPieceAtPosition(enPassantTakePosition) as Pawn;
                 if (pawnToTake != null && pawnToTake.IsOpponentOf(this) && pawnToTake.CanBeTookEnPassant)
-                    toReturn.Add(new Move(this, destPosition, pawnToTake) );
+                    toReturn.Add(new Move(MoveKind.TakeEnPassant, this, destPosition, pawnToTake) );
             }
 
             return toReturn;

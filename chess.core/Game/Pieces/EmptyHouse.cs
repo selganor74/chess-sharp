@@ -42,12 +42,12 @@ namespace chess.core.Game
             return true;
         }
 
-        public void Move(string to, IPiece tookPiece = null)
+        public void Move(string to, MoveKind moveKind, IPiece tookPiece = null)
         {
             throw new Exception("Can't move an empty house!");
         }
 
-        public void Move(Position to, IPiece tookPiece = null)
+        public void Move(Position to, MoveKind moveKind, IPiece tookPiece = null)
         {
             throw new Exception("Can't move an empty house!");
         }

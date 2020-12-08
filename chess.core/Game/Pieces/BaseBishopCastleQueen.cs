@@ -28,7 +28,7 @@ namespace chess.core.Game
 
                     if (Board.IsPositionOccupiedByOpponent(nextPosition, this))
                     {
-                        var takingMove = new Move(this, nextPosition, Board.GetPieceAtPosition(nextPosition));
+                        var takingMove = new Move(MoveKind.Take, this, nextPosition, Board.GetPieceAtPosition(nextPosition));
                         toReturn.Add(takingMove);
                         break;
                     }
@@ -36,7 +36,7 @@ namespace chess.core.Game
                     if (!Board.IsPositionFree(nextPosition))
                         break;
 
-                    var move = new Move(this, nextPosition, null);
+                    var move = new Move(MoveKind.Move, this, nextPosition, null);
                     toReturn.Add(move);
                     currentStep++;
                 } 

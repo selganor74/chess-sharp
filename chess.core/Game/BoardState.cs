@@ -14,7 +14,7 @@ namespace chess.core.Game
 
         public Color NextPlayer { get; set; } = Color.White;
         public Color Opponent { get { return NextPlayer == Color.White ? Color.Black : Color.White; } }
-        public bool PlayerIsUnderCheck {get { return GetMovesForPlayer(Opponent, false).Any(m => m.TookPiece == Kind.King); } }
+        public bool PlayerIsUnderCheck { get { return GetMovesForPlayer(Opponent, false).Any(m => m.TookPiece == Kind.King); } }
         public IPiece[] Houses { get; set; }
         public int MovesCounter { get; private set; }
         public int MovesWithoutTakesCounter { get; private set; }
@@ -95,7 +95,7 @@ namespace chess.core.Game
             throw new Exception($"Can't create piece of kind {kind.ToString()}");
         }
 
-        public void MakeMove(Move move)
+        public void MakeMove(Move move, bool updateOpponent = true)
         {
             var pieceAtSource = GetPieceAtPosition(move.From);
             if (pieceAtSource.Kind != move.Piece)
@@ -109,23 +109,34 @@ namespace chess.core.Game
             RemovePieceAt(move.From);
             PutPieceAt(pieceAtSource, move.To);
 
+            if (move.MoveKind == MoveKind.Castling)
+            {
+                var castle = (Castle)GetPieceAtPosition(move.CastleFrom);
+                var castleMove = new Move(MoveKind.Move, castle, move.CastleTo, null);
+                MakeMove(castleMove, false);
+                castle.IsFirstMove = false;
+            }
             // If a pawn traverses all the board becomes a Queen !!!
-            if(move.Piece == Kind.Pawn && move.To.Row == ((move.Player == Color.Black) ? 0 : 7)) 
+            if (move.Piece == Kind.Pawn && move.To.Row == ((move.Player == Color.Black) ? 0 : 7))
             {
                 var queen = new Queen(move.To, move.Player);
                 RemovePieceAt(move.To);
                 PutPiece(queen);
             }
 
-            NextPlayer = Opponent;
-            MovesCounter++;
-            LastMove = move;
-            if (move.TookPiece != null)
-                MovesWithoutTakesCounter = 0;
-            else
-                MovesWithoutTakesCounter++;
+            if (updateOpponent)
+            {
+                NextPlayer = Opponent;
+                MovesCounter++;
+                LastMove = move;
+                if (move.TookPiece != null)
+                    MovesWithoutTakesCounter = 0;
+                else
+                    MovesWithoutTakesCounter++;
 
-            _moveHandlers[move.Player]?.Invoke(move);
+                _moveHandlers[move.Player]?.Invoke(move);
+            }
+
         }
 
         public List<Move> GetMovesForPlayer(Color playerColor, bool checkForChecks = true)
@@ -146,6 +157,11 @@ namespace chess.core.Game
             }
 
             return moves;
+        }
+
+        public List<Castle> GetCastlesForPlayer(Color player)
+        {
+            return Houses.Where(p => p is Castle && p.Color == player).Select(p => (Castle)p).ToList();
         }
 
         public override string ToString()

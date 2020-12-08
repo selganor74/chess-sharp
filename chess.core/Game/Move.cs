@@ -2,9 +2,17 @@ using System;
 
 namespace chess.core.Game
 {
+    public enum MoveKind {
+        Move, 
+        Take,
+        Castling,
+        TakeEnPassant,
+        PawnPromotion,
+    }
     [Serializable]
     public class Move
     {
+        public MoveKind MoveKind {get;set;} = MoveKind.Move;
         public Color Player {get;}
         public Kind Piece { get;  }
         public Position From { get;  }
@@ -12,8 +20,14 @@ namespace chess.core.Game
         public Kind? TookPiece { get;  }
         public Position TookPiecePosition { get; }
 
-        public Move(IPiece piece, Position to, Kind? tookPiece = null, Position tookPiecePosition = null)
+        // Used only for Castling
+        public Kind? CastlePiece { get;  } 
+        public Position CastleFrom { get;  } = null;
+        public Position CastleTo { get;  } = null;
+
+        public Move(MoveKind moveKind, IPiece piece, Position to, Kind? tookPiece = null, Position tookPiecePosition = null)
         {
+            MoveKind = moveKind;
             Player = piece.Color;
             Piece = piece.Kind;
             From = piece.Position;
@@ -22,18 +36,25 @@ namespace chess.core.Game
             TookPiecePosition = tookPiecePosition;
         }
 
-        public Move(IPiece piece, Position to, IPiece tookPiece = null) : this(piece, to, tookPiece?.Kind, tookPiece?.Position)
+        public Move(MoveKind moveKind, IPiece piece, Position to, IPiece tookPiece = null) : this(moveKind, piece, to, tookPiece?.Kind, tookPiece?.Position)
         {
         }
 
-        public Move(IPiece piece, string to, IPiece tookPiece = null) : this(piece, new Position(to), tookPiece)
+        public Move(MoveKind moveKind, IPiece piece, Position to, Position castleFrom, Position castleTo) : this(moveKind, piece, to, null)
+        {
+            CastlePiece = Kind.Castle;
+            CastleFrom = castleFrom;
+            CastleTo = castleTo;
+        }
+
+        public Move(MoveKind moveKind, IPiece piece, string to, IPiece tookPiece = null) : this(moveKind, piece, new Position(to), tookPiece)
         {
         }
 
         public override string ToString()
         {
             var take = TookPiece != null ? $"takes {TookPiece}" : "";
-            return $"{Player.ToString()} {Piece.ToString()} ( {From.AsString} -> {To.AsString} ) {take}";
+            return $"{Player.ToString()} {Piece.ToString()} ( {From.AsString} -> {To.AsString} ) {take} {MoveKind.ToString()}";
         }
     }
 }
