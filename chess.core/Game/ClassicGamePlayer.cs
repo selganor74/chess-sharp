@@ -3,21 +3,31 @@ using System.Collections.Generic;
 
 namespace chess.core.Game
 {
+    public enum Winner
+    {
+        White,
+        Black,
+        Draw
+    }
+
     [Serializable]
     public class ClassicGamePlayer
     {
+        public int numberOfMovesWithoutTakesForDraw { get; set; } = 150;
         public BoardState Board { get; }
-        public Color Winner {get; private set;}
+        public Winner Winner { get; private set; }
         public ClassicGamePlayer()
         {
             Board = new BoardState();
             Board.InitClassicGame();
         }
 
-        public IEnumerable<Move> Play() {
+        public IEnumerable<Move> Play()
+        {
             var rnd = new Random();
-            
+
             List<Move> moves = Board.GetMovesForPlayer(Board.NextPlayer);
+            bool itsADraw = false;
             do
             {
                 var numberOfMoves = moves.Count;
@@ -28,13 +38,15 @@ namespace chess.core.Game
                 yield return move;
 
                 moves = Board.GetMovesForPlayer(Board.NextPlayer);
-                if (Board.MovesWithoutTakesCounter > 150) {
+                itsADraw = Board.MovesWithoutTakesCounter >= numberOfMovesWithoutTakesForDraw; 
+                if (itsADraw)
+                {
                     moves = new List<Move>();
                 }
             }
-            while(moves.Count > 0);
+            while (moves.Count > 0);
 
-            Winner = Board.Opponent;
+            Winner = itsADraw ? Winner.Draw : (Board.Opponent == Color.White ? Winner.White : Winner.Black);
         }
     }
 }

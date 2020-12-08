@@ -55,7 +55,7 @@ namespace chess.core.tests
             board.PutPiece(blackKnight);
 
             var moves = whiteKnight.ValidMoves();
-            Assert.IsNotNull(moves.SingleOrDefault(m => m.TookPiece == blackKnight));
+            Assert.IsNotNull(moves.SingleOrDefault(m => m.TookPiece == blackKnight.Kind));
         }
 
         [Test]

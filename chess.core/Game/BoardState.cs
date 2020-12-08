@@ -97,15 +97,13 @@ namespace chess.core.Game
 
         public void MakeMove(Move move)
         {
-
-            var source = Houses[move.From.AsIndex];
-            if (source.Kind != move.Piece || source.Position.AsIndex != move.From.AsIndex)
-                throw new Exception($"Invalid move. Piece at {move.From.AsString} is not of kind {move.Piece.ToString()}, but is a {source.Kind.ToString()}");
+            var pieceAtSource = GetPieceAtPosition(move.From);
+            if (pieceAtSource.Kind != move.Piece)
+                throw new Exception($"Invalid move. Piece at {move.From.AsString} is not of kind {move.Piece.ToString()}, but is a {pieceAtSource.Kind.ToString()}");
 
             if (NextPlayer != move.Player)
                 throw new Exception($"It's {NextPlayer.ToString()} turn! Tried to move {move.Player} piece");
 
-            var pieceAtSource = GetPieceAtPosition(move.From);
             var pieceAtDestination = GetPieceAtPosition(move.To);
 
             RemovePieceAt(move.From);
@@ -136,11 +134,11 @@ namespace chess.core.Game
 
             if (checkForChecks)
             {
-                // Moves that not cause a Check
+                // Removes moves that would cause a Check
                 foreach (var m in moves.ToList())
                 {
-                    var simulated = SimulateMove(m);
-                    var opponentsMoves = simulated.GetMovesForPlayer(playerColor == Color.White ? Color.Black : Color.White, false);
+                    var simulatedBoard = SimulateMove(m);
+                    var opponentsMoves = simulatedBoard.GetMovesForPlayer(Opponent, false);
                     var causesCheck = opponentsMoves.Any(om => om.TookPiece == Kind.King);
                     if (causesCheck)
                         moves.Remove(m);

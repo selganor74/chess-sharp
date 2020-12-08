@@ -108,7 +108,7 @@ namespace chess.core.tests
             var validMoves = whitePawn.ValidMoves();
             var aMoveThatTakes = validMoves.SingleOrDefault(m => m.TookPiece != null);
             Assert.IsNotNull(aMoveThatTakes);
-            Assert.AreEqual(Kind.Pawn, aMoveThatTakes.TookPiece.Kind);
+            Assert.AreEqual(Kind.Pawn, aMoveThatTakes.TookPiece);
         }
 
         [Test]
@@ -145,7 +145,7 @@ namespace chess.core.tests
             board.PutPiece(blackPawn);
 
             whitePawn.Move("c4");
-            var aMoveThatTakes = blackPawn.ValidMoves().SingleOrDefault(m => m.TookPiece == whitePawn);
+            var aMoveThatTakes = blackPawn.ValidMoves().SingleOrDefault(m => m.TookPiece == whitePawn.Kind);
             Assert.IsNotNull(aMoveThatTakes);
         }
 
@@ -161,7 +161,7 @@ namespace chess.core.tests
             board.PutPiece(blackPawn);
 
             whitePawn.Move("c3");
-            var aMoveThatTakes = blackPawn.ValidMoves().SingleOrDefault(m => m.TookPiece == whitePawn);
+            var aMoveThatTakes = blackPawn.ValidMoves().SingleOrDefault(m => m.TookPiece == whitePawn.Kind);
             Assert.IsNull(aMoveThatTakes);
         }
 
@@ -185,7 +185,7 @@ namespace chess.core.tests
             neutralBlackPawn.Move("a6");
             board.NextPlayer = Color.Black;
 
-            var aMoveThatTakes = blackPawn.ValidMoves().SingleOrDefault(m => m.TookPiece == whitePawn);
+            var aMoveThatTakes = blackPawn.ValidMoves().SingleOrDefault(m => m.TookPiece == whitePawn.Kind);
             Assert.IsNull(aMoveThatTakes);
         }
     }

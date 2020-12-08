@@ -14,7 +14,10 @@ namespace chess.player.console
                 // Console.WriteLine("Press a key for next move");
                 // var k = Console.ReadKey();
             }
-            Console.Write($"The winner is {game.Winner.ToString()}");
+            if (game.Winner == Winner.Draw)
+                Console.WriteLine("It's a draw!");
+            else
+                Console.Write($"The winner is {game.Winner.ToString()}");
         }
     }
 }
