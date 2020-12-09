@@ -25,16 +25,6 @@ namespace chess.core.Game
         }
         public abstract List<Move> ValidMoves();
 
-        public virtual void Move(string to, MoveKind moveKind, IPiece tookPiece = null)
-        {
-            Move(new Position(to), moveKind, tookPiece);
-        }
-
-        public virtual void Move(Position to, MoveKind moveKind, IPiece tookPiece = null)
-        {
-            var move = new Move(moveKind, this, to, tookPiece);
-            Move(move);
-        }
         public virtual void Move(Move move)
         {
             Board.MakeMove(move);

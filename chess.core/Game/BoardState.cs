@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
+using chess.core.Game.Moves;
 
 namespace chess.core.Game
 {
@@ -112,7 +113,7 @@ namespace chess.core.Game
             if (move.MoveKind == MoveKind.Castling)
             {
                 var castle = (Castle)GetPieceAtPosition(move.CastleFrom);
-                var castleMove = new Move(MoveKind.Move, castle, move.CastleTo, null);
+                var castleMove = new SimpleMove(castle, move.CastleTo);
                 MakeMove(castleMove, false);
                 castle.IsFirstMove = false;
             }

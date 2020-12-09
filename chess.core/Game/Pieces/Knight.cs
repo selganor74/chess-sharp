@@ -7,6 +7,7 @@ using System.Globalization;
 using System.Runtime.CompilerServices;
 using System;
 using System.Collections.Generic;
+using chess.core.Game.Moves;
 
 namespace chess.core.Game
 {
@@ -43,11 +44,11 @@ namespace chess.core.Game
                 if (Board.IsPositionFree(destination) || Board.IsPositionOccupiedByOpponent(destination, this))
                 {
                     var eventualOpponent = Board.GetOpponentAtPosition(destination, this);
-                    var moveKind = MoveKind.Move;
+                    Move mv = null;
                     if (eventualOpponent != null)
-                        moveKind = MoveKind.Take;
-                        
-                    var mv = new Move(moveKind, this, destination, eventualOpponent);
+                        mv = new TakeMove(this, destination, eventualOpponent);
+                    else
+                        mv = new SimpleMove(this, destination);
 
                     toReturn.Add(mv);
                 }

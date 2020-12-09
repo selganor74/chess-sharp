@@ -3,6 +3,7 @@ using System;
 using System.Linq;
 using chess.core.Game;
 using NUnit.Framework;
+using chess.core.Game.Moves;
 
 namespace chess.core.tests
 {
@@ -144,7 +145,7 @@ namespace chess.core.tests
             var blackPawn = NewBlackPawn("d4"); // this will take the previous "en passant" ( https://en.wikipedia.org/wiki/En_passant )
             board.PutPiece(blackPawn);
 
-            whitePawn.Move("c4", MoveKind.Move);
+            whitePawn.Move(new SimpleMove(whitePawn, new Position("c4")));
             var aMoveThatTakes = blackPawn.ValidMoves().SingleOrDefault(m => m.TookPiece == whitePawn.Kind);
             Assert.IsNotNull(aMoveThatTakes);
         }
@@ -160,7 +161,7 @@ namespace chess.core.tests
             var blackPawn = NewBlackPawn("d3"); // this will not be able to take the previous "en passant" ( https://en.wikipedia.org/wiki/En_passant )
             board.PutPiece(blackPawn);
 
-            whitePawn.Move("c3", MoveKind.Move);
+            whitePawn.Move(new SimpleMove(whitePawn, new Position("c3")));
             var aMoveThatTakes = blackPawn.ValidMoves().SingleOrDefault(m => m.TookPiece == whitePawn.Kind);
             Assert.IsNull(aMoveThatTakes);
         }
@@ -181,8 +182,8 @@ namespace chess.core.tests
             var neutralBlackPawn = NewBlackPawn("a7"); // this will be moved after
             board.PutPiece(neutralBlackPawn);
             
-            whitePawn.Move("c4", MoveKind.Move);
-            neutralBlackPawn.Move("a6", MoveKind.Move);
+            whitePawn.Move(new SimpleMove(whitePawn, new Position("c4")));
+            neutralBlackPawn.Move(new SimpleMove(neutralBlackPawn, new Position("a6")));
             board.NextPlayer = Color.Black;
 
             var aMoveThatTakes = blackPawn.ValidMoves().SingleOrDefault(m => m.TookPiece == whitePawn.Kind);

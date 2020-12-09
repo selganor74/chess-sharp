@@ -1,6 +1,7 @@
 using System.Linq;
 using System;
 using System.Collections.Generic;
+using chess.core.Game.Moves;
 
 namespace chess.core.Game
 {
@@ -55,7 +56,7 @@ namespace chess.core.Game
                     if (canDoCastling) {
                         var newKingPosition = kingPosition.MoveBy(0, 2 * direction);
                         var newCastlePosition = newKingPosition.MoveBy(0, -1 * direction);
-                        validMoves.Add(new Move(MoveKind.Castling, this, newKingPosition, c.Position, newCastlePosition));
+                        validMoves.Add(new CastlingMove(this, newKingPosition, c, newCastlePosition));
                     }
                 }
             }            

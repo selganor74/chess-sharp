@@ -2,59 +2,35 @@ using System;
 
 namespace chess.core.Game
 {
-    public enum MoveKind {
-        Move, 
+    public enum MoveKind
+    {
+        Move,
         Take,
         Castling,
         TakeEnPassant,
         PawnPromotion,
     }
     [Serializable]
-    public class Move
+    public abstract class Move
     {
-        public MoveKind MoveKind {get;set;} = MoveKind.Move;
-        public Color Player {get;}
-        public Kind Piece { get;  }
-        public Position From { get;  }
-        public Position To { get;  }
-        public Kind? TookPiece { get;  }
-        public Position TookPiecePosition { get; }
+        public abstract MoveKind MoveKind { get; }
+        public Color Player { get; protected set; }
+        public Kind Piece { get; protected set; }
+        public Position From { get; protected set; }
+        public Position To { get; protected set; }
+        public Kind? TookPiece { get; protected set; }
+        public Position TookPiecePosition { get; protected set; }
 
         // Used only for Castling
-        public Kind? CastlePiece { get;  } 
-        public Position CastleFrom { get;  } = null;
-        public Position CastleTo { get;  } = null;
+        public Kind? CastlePiece { get; protected set;}
+        public Position CastleFrom { get; protected set;} = null;
+        public Position CastleTo { get; protected set; } = null;
 
-        public Move(MoveKind moveKind, IPiece piece, Position to, Kind? tookPiece = null, Position tookPiecePosition = null)
-        {
-            MoveKind = moveKind;
-            Player = piece.Color;
-            Piece = piece.Kind;
-            From = piece.Position;
-            To = to;
-            TookPiece = tookPiece;
-            TookPiecePosition = tookPiecePosition;
-        }
-
-        public Move(MoveKind moveKind, IPiece piece, Position to, IPiece tookPiece = null) : this(moveKind, piece, to, tookPiece?.Kind, tookPiece?.Position)
-        {
-        }
-
-        public Move(MoveKind moveKind, IPiece piece, Position to, Position castleFrom, Position castleTo) : this(moveKind, piece, to, null)
-        {
-            CastlePiece = Kind.Castle;
-            CastleFrom = castleFrom;
-            CastleTo = castleTo;
-        }
-
-        public Move(MoveKind moveKind, IPiece piece, string to, IPiece tookPiece = null) : this(moveKind, piece, new Position(to), tookPiece)
-        {
-        }
 
         public override string ToString()
         {
             var take = TookPiece != null ? $"takes {TookPiece}" : "";
-            return $"{Player.ToString()} {Piece.ToString()} ( {From.AsString} -> {To.AsString} ) {take} {MoveKind.ToString()}";
+            return $"{Player.ToString()} [{MoveKind.ToString()}] {Piece.ToString()} ( {From.AsString} -> {To.AsString} ) {take}";
         }
     }
 }
