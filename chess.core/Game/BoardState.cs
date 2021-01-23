@@ -86,16 +86,6 @@ namespace chess.core.Game
             return toReturn;
         }
 
-        public IPiece PieceFactory(Kind kind, Color color, Position position)
-        {
-            switch (kind)
-            {
-                case Kind.Pawn: return new Pawn(position, color);
-                case Kind.Knight: return new Knight(position, color);
-            }
-            throw new Exception($"Can't create piece of kind {kind.ToString()}");
-        }
-
         public void MakeMove(Move move, bool updateOpponent = true)
         {
             var pieceAtSource = GetPieceAtPosition(move.From);

@@ -37,7 +37,7 @@ namespace chess.core.Game
         {
             var validMoves = base.ValidMoves();
 
-            // Castling is a move the king can do.
+            // Castling is a move the king can do only on its first move and must also be the rook's first move.
             if (IsFirstMove) {
                 var castles = Board.GetCastlesForPlayer(Color).Where(c => c.IsFirstMove);
                 var kingPosition = Position;

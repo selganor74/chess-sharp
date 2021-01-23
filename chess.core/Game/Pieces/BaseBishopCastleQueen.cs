@@ -7,8 +7,8 @@ namespace chess.core.Game
     [Serializable]
     public abstract class BaseBishopCastleQueenKing : BasePiece
     {
-        protected abstract List<Tuple<int,int>> Directions {get;}
-        protected abstract int MaxSteps {get;}
+        protected abstract List<Tuple<int, int>> Directions { get; }
+        protected abstract int MaxSteps { get; }
         public override BoardState Board { get => base.Board; set => base.Board = value; }
         protected BaseBishopCastleQueenKing(Position position, Color color) : base(position, color)
         {
@@ -40,8 +40,8 @@ namespace chess.core.Game
                     var move = new SimpleMove(this, nextPosition);
                     toReturn.Add(move);
                     currentStep++;
-                } 
-                while(currentStep <= MaxSteps );
+                }
+                while (currentStep <= MaxSteps);
 
             }
 

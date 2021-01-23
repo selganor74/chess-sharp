@@ -41,6 +41,10 @@ namespace chess.core.Game
             AsIndex = fromIndex;
         }
 
+        public Position(int zeroBasedColumn, int zeroBasedRow) : this(fromIndex: zeroBasedRow*8 + zeroBasedColumn)
+        {
+        }
+
         public Position MoveBy(int offsetY, int offsetX)
         {
             int currX = AsIndex % 8;
