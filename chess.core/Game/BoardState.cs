@@ -54,6 +54,11 @@ namespace chess.core.Game
             Houses[piece.Position.AsIndex] = piece;
         }
 
+        public List<IPiece> GetPieces(Color forPlayer)
+        {
+            return this.Houses.Where(h => h.Kind != Kind.Empty && h.Color == forPlayer).ToList();
+        }
+
         public void PutPiece(IPiece piece)
         {
             PutPieceAt(piece, piece.Position);
@@ -189,7 +194,7 @@ namespace chess.core.Game
             return sb.ToString();
         }
 
-        protected BoardState SimulateMove(Move move)
+        public BoardState SimulateMove(Move move)
         {
             var clonedBoard = this.CloneBoard();
             clonedBoard.MakeMove(move);
@@ -200,13 +205,6 @@ namespace chess.core.Game
         {
             var toReturn = new BoardState()
             {
-                // LastMove = LastMove != null ? new Move()
-                // {
-                //     From = new Position(LastMove.From.AsIndex),
-                //     To = new Position(LastMove.To.AsIndex),
-                //     Piece = LastMove.Piece.Clone(),
-                //     TookPiece = LastMove?.TookPiece?.Clone()
-                // } : null,
                 NextPlayer = this.NextPlayer,
                 MovesCounter = this.MovesCounter
             };

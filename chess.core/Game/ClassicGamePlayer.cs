@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace chess.core.Game
 {
@@ -30,7 +31,16 @@ namespace chess.core.Game
             bool itsADraw = false;
             do
             {
+
+                foreach(var m in moves) 
+                {
+                    m.Evaluation = Board.EvaluateMove(m);
+                }
+                var maxEvaluation = moves.Max(m => m.Evaluation);
+                moves = moves.Where(m => m.Evaluation == maxEvaluation).ToList();
+
                 var numberOfMoves = moves.Count;
+
                 var nextMoveIndex = rnd.Next(numberOfMoves - 1);
                 var move = moves[nextMoveIndex];
                 var toMove = Board.GetPieceAtPosition(move.From);
@@ -38,6 +48,7 @@ namespace chess.core.Game
                 yield return move;
 
                 moves = Board.GetMovesForPlayer(Board.NextPlayer);
+
                 itsADraw = Board.MovesWithoutTakesCounter >= numberOfMovesWithoutTakesForDraw; 
                 if (itsADraw)
                 {

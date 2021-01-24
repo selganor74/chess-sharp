@@ -26,11 +26,13 @@ namespace chess.core.Game
         public Position CastleFrom { get; protected set;} = null;
         public Position CastleTo { get; protected set; } = null;
 
+        public int Evaluation { get; set; } = 0;
 
         public override string ToString()
         {
             var take = TookPiece != null ? $"takes {TookPiece}" : "";
-            return $"{Player.ToString()} [{MoveKind.ToString()}] {Piece.ToString()} ( {From.AsString} -> {To.AsString} ) {take}";
+            var evaluation = Evaluation != 0 ? $"evaluated: {Evaluation}" : "";
+            return $"{Player.ToString()} [{MoveKind.ToString()}] {Piece.ToString()} ( {From.AsString} -> {To.AsString} ) {take} {evaluation}";
         }
     }
 }
